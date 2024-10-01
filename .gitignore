@@ -1,0 +1,72 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Poetry virtual environments
+# If using Poetry's virtual environment in the project folder
+.venv/
+
+# Environment variables
+.env
+secrets.env
+
+# GCP credentials and other sensitive files
+secrets/
+!secrets/README.md  # If you want to keep a README explaining how to use the secrets folder
+
+# Docker specific files
+docker-compose.override.yml
+*.env
+
+# Ignore the logs folder
+logs/
+*.log
+
+# Ignore the database volume folder (if any)
+db_data/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Test-related files
+.tox/
+.pytest_cache/
+
+# Poetry lock files
+poetry.lock
+
+# Jupyter Notebook checkpoints (if any)
+.ipynb_checkpoints/
+
+# System-specific files
+.vscode/
+.idea/
+*.swp
+
+# Terraform-related files
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+# Ignore sensitive database credentials
+infra/db_credentials.txt
+
+secrets/*
