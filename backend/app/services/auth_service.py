@@ -1,13 +1,9 @@
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
-import os
-from dotenv import load_dotenv
+from passlib.context import CryptContext
+from backend.app.config.settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
-load_dotenv()
-
-SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_access_token(data: dict):
     to_encode = data.copy()

@@ -1,11 +1,9 @@
 from fastapi import FastAPI
-from app.auth import user_routes
+from backend.app.routes import auth_routes
 
-# Initialize FastAPI app
 app = FastAPI()
 
-# Register the user authentication router
-app.include_router(user_routes.router)
+app.include_router(auth_routes.router, prefix="/auth", tags=["Authentication"])
 
 @app.get("/")
 def read_root():
