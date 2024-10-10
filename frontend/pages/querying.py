@@ -12,23 +12,24 @@ def display():
         if query_text:
             with st.spinner("Processing query..."):
                 query_url = f"{API_BASE_URL}/query"
-                params = {'query': query_text}
                 try:
-                    response = requests.get(
+                    response = requests.post(
                         query_url,
                         headers=get_headers(),
-                        params=params
+                        json={"query": query_text}
                     )
                     if response.status_code == 200:
                         data = response.json()
                         st.success("Query processed successfully!")
                         st.write(data.get("result", "No result available."))
                     elif response.status_code == 401:
+                        # Attempt to refresh the access token
                         if refresh_access_token():
-                            response = requests.get(
+                            # Retry the request with new access token
+                            response = requests.post(
                                 query_url,
                                 headers=get_headers(),
-                                params=params
+                                json={"query": query_text}
                             )
                             if response.status_code == 200:
                                 data = response.json()
