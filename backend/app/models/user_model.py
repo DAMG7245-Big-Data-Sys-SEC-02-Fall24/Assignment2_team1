@@ -1,24 +1,37 @@
-from sqlalchemy import Column, Integer, String, TIMESTAMP, func
+from sqlalchemy import Column, Integer, String, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
-from pydantic import BaseModel, Field, EmailStr, validator
-from typing import List
+from pydantic import BaseModel, Field, EmailStr, validator, constr
+import regex
+from datetime import datetime
 
+# SQLAlchemy Base model
 Base = declarative_base()
 
+# SQLAlchemy model for Users table in the database
 class User(Base):
     __tablename__ = "Users"
-    
-    UserId = Column(Integer, primary_key=True, index=True)
-    Username = Column(String(255), unique=True, nullable=False)
-    Email = Column(String(255), unique=True, nullable=False)
-    PasswordHash = Column(String, nullable=False)
-    CreatedAt = Column(TIMESTAMP, server_default=func.now())
 
+    UserId = Column(Integer, primary_key=True, index=True)  # Automatically generated unique UserId
+    Username = Column(String(255), nullable=False, unique=True)  # Username cannot be blank and must be unique
+    Email = Column(String(255), nullable=False, unique=True)  # Email cannot be blank and must be unique
+    PasswordHash = Column(String, nullable=False)  # Hashed password, cannot be blank
+    CreatedAt = Column(TIMESTAMP, default=datetime.utcnow)  # Automatically set timestamp when a new record is created
+
+# Pydantic model for user registration input validation
 class UserRegisterModel(BaseModel):
-    Username: str = Field(..., min_length=1, max_length=255, description="Username cannot be blank")
+    Username: constr(min_length=3, max_length=50) = Field(..., 
+      description="Username must be alphanumeric, between 3 to 50 characters, and cannot be blank")
+
+    # Custom validator for Username
+    @validator("Username")
+    def validate_username(cls, value):
+        if not regex.match(r'^\w+$', value):
+            raise ValueError("Username must be alphanumeric")
+        return value
+
     Email: EmailStr = Field(..., description="Email must be valid")
     Password: str = Field(..., min_length=8, description="Password cannot be blank and must have at least 8 characters")
-    
+
     @validator("Password")
     def validate_password(cls, value):
         if len(value) < 8:
@@ -31,13 +44,15 @@ class UserRegisterModel(BaseModel):
             raise ValueError("Password must contain at least one lowercase letter")
         return value
 
+# Pydantic model for user login input validation
 class UserLoginModel(BaseModel):
-    Email: EmailStr = Field(..., description="Email must be valid")
-    Password: str = Field(..., min_length=8, description="Password cannot be blank")
+    Email: EmailStr = Field(..., description="Email must be valid")  # Validates email format
+    Password: str = Field(..., min_length=8, description="Password cannot be blank")  # Validates password with a minimum length of 8 characters
 
+# Pydantic model for response when fetching user details
 class UserListResponse(BaseModel):
-    UserId: int
-    Email: str
+    UserId: int  # User ID for identification
+    Email: EmailStr  # Email of the user
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Allows ORM models to be converted to Pydantic models

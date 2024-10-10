@@ -1,0 +1,5 @@
+# .dockerignore
+
+.env
+secrets/
+infra/db_credentials.txt
