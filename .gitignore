@@ -70,3 +70,4 @@ terraform.tfstate.backup
 infra/db_credentials.txt
 
 secrets/*
+Assignment2_team1.code-workspace
