@@ -2,8 +2,9 @@
 # Assignment 2 - Document Processing and Querying Platform
 
 **Team Members:**
-- Uday Kiran Dasari
-- [Add other team members here]
+- Uday Kiran Dasari - Backend ,Docker, Fronted - 33.3%
+- Sai Surya Madhav Rebbapragada - Backend, Frontend, Integratrion - 33.3%
+- Akash Varun Pennamaraju - Airflow, Infra setup - 33.3%
 
 ## Introduction
 
