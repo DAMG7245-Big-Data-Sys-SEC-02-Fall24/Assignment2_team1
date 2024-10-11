@@ -26,6 +26,8 @@ services:
       - ./.env
     depends_on:
       - backend
+    volumes:
+      - ./secrets:/app/secrets:ro
 
 volumes:
   postgres_data:
