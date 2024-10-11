@@ -145,9 +145,8 @@ def display_file_picker(bucket_name, prefix):
             # If the user selected Summarize
             if st.session_state['operation'] == "Summarize":
                 with st.container():  # Using a container to box the summary
-                    if st.button("Summarize Document"):
+                    if st.button("Summarize Document", type="primary"):
                         access_token = st.session_state.get('access_token')
-                        print(access_token)
                         if access_token:
                             summary, error = summarize_document_api(
                                 document_name=st.session_state['selected_file'],

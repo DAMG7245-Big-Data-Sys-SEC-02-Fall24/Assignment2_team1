@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from typing import Dict
 from app.services.database_service import get_db
 from app.services.auth_service import verify_token  # Assuming token validation is handled in auth_service
+from app.services.document_service import DocumentService  # Import the service layer
 import logging
 
 # Initialize the router for document routes
@@ -15,6 +16,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
+def get_collection_name(model_type: str):
+    """
+    Helper function to get the collection name based on model type and GPT model. ["Open Source Extractor", "Closed Source Extractor"],
+    """
+    if model_type == "Open Source Extractor":
+        return f"pdf_collection_pymupdf"
+    elif model_type == "Closed Source Extractor":
+        return f"pdf_collection_pymupdf"
+    else:
+        raise HTTPException(status_code=400, detail="Invalid model type")
 
 # Route to query document based on a user-provided query
 @router.post("/documents/query", tags=["Query"])
@@ -37,16 +48,15 @@ async def query_endpoint(
         query_text = query.get("query_text")
         model_type = query.get("model_type")
         gpt_model = query.get("gpt_model")
+        collection_name = get_collection_name(model_type)
 
-        if not document_name or not query_text or not model_type or not gpt_model:
+        if not document_name or not query_text or not collection_name or not model_type or not gpt_model:
             raise HTTPException(status_code=400, detail="Missing required parameters in request body")
 
-        # Here, implement actual querying logic
-        logging.info(f"User {user_email} is querying document '{document_name}' with query: {query_text}")
+        # Call the service layer to query the document
+        document = DocumentService.query_document(collection_name, document_name, query_text)
 
-        # For demonstration purposes, a mock response is returned
-        response = f"Query successful for document '{document_name}' with query '{query_text}'."
-        return {"response": response}
+        return {"response": document}
 
     except Exception as e:
         logging.error(f"An error occurred during the query process: {str(e)}")
@@ -73,15 +83,17 @@ async def summarize_endpoint(
         document_name = summary_request.get("document_name")
         model_type = summary_request.get("model_type")
         gpt_model = summary_request.get("gpt_model")
-        if not document_name or not model_type or not gpt_model:
+
+        collection_name = get_collection_name(model_type)
+        logging.info(f"Summarizing document: {document_name} using model: {gpt_model}")
+
+        if not document_name or not collection_name or not model_type or not gpt_model:
             raise HTTPException(status_code=400, detail="Missing required parameters in request body")
 
-        # Here, implement actual summarization logic
-        logging.info(f"User {user_email} is summarizing document '{document_name}' using model '{gpt_model}'")
+        # Call the service layer to summarize the document
+        summary = DocumentService.summarize_document(collection_name, document_name)
 
-        # For demonstration purposes, a mock response is returned
-        response = f"Summary successful for document '{document_name}'."
-        return {"summary": response}
+        return {"summary": summary}
 
     except Exception as e:
         logging.error(f"An error occurred during the summarization process: {str(e)}")
