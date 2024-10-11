@@ -10,7 +10,7 @@
   - **Frontend (Streamlit)**: [Link to Streamlit Application](http:/35.196.79.156:8501)
   - **Backend (FastAPI)**: [Link to FastAPI Application](http:/35.196.79.156:8000/docs)
   - **Data Processing Service (Airflow)**: [Link to Data Processing Service](http:/35.196.79.156:8080)
-- **PDF Evaluation Link**: [Link to PDF Evaluation Doc](https://drive.google.com/drive/folders/1sQ_tBHTOYtxekR2vzkcsZmJdjAQTIsau)
+- **PDF Evaluation Link**: [Link to PDF Evaluation Doc](https://codelabs-preview.appspot.com/?file_id=1YFwYONJ8TrAw3undX7q9TB5IK2b4vVnJ8BLF0m_MGfg#0)
 
 ## Introduction
 
