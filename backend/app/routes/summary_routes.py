@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from typing import Dict
 from app.services.database_service import get_db
 from app.services.auth_service import verify_token  # Assuming token validation is handled in auth_service
+from app.services.document_service import DocumentService  # Import the service layer
 import logging
 
 # Initialize the router for document routes
@@ -15,6 +16,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
+def get_collection_name(model_type: str):
+    """
+    Helper function to get the collection name based on model type and GPT model. ["Open Source Extractor", "Closed Source Extractor"],
+    """
+    if model_type == "Open Source Extractor":
+        return f"pdf_collection_pymupdf"
+    elif model_type == "Closed Source Extractor":
+        return f"pdf_collection_pymupdf"
+    else:
+        raise HTTPException(status_code=400, detail="Invalid model type")
 
 # Route to query document based on a user-provided query
 @router.post("/documents/query", tags=["Query"])
@@ -24,15 +35,15 @@ async def query_endpoint(
         db: Session = Depends(get_db)
 ):
     """
-    Endpoint to query a document based on user input.
+    Endpoint to query a document and pass it for evaluation.
     """
     try:
-        # Verify the JWT token and get user email
+        # Verify the JWT token
         user_email = verify_token(token)
         if not user_email:
             raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-        # Extract query parameters from the body
+        # Extract query parameters from the request body
         document_name = query.get("document_name")
         query_text = query.get("query_text")
         model_type = query.get("model_type")
@@ -41,11 +52,13 @@ async def query_endpoint(
         if not document_name or not query_text or not model_type or not gpt_model:
             raise HTTPException(status_code=400, detail="Missing required parameters in request body")
 
-        # Here, implement actual querying logic
-        logging.info(f"User {user_email} is querying document '{document_name}' with query: {query_text}")
+        collection_name = get_collection_name(model_type)
 
-        # For demonstration purposes, a mock response is returned
-        response = f"Query successful for document '{document_name}' with query '{query_text}'."
+        # Call the document service to retrieve and evaluate the document
+        response = DocumentService.query_and_evaluate_document(
+            collection_name, document_name, query_text, gpt_model, "Query"
+        )
+
         return {"response": response}
 
     except Exception as e:
@@ -53,7 +66,7 @@ async def query_endpoint(
         raise HTTPException(status_code=500, detail=f"An error occurred while querying the document: {str(e)}")
 
 
-# Route to summarize a document based on user input
+# Route to summarize a document and pass it to evaluation service
 @router.post("/documents/summarize", tags=["Summary"])
 async def summarize_endpoint(
         summary_request: Dict[str, str] = Body(...),
@@ -64,23 +77,26 @@ async def summarize_endpoint(
     Endpoint to summarize a document.
     """
     try:
-        # Verify the JWT token and get user email
+        # Verify the JWT token
         user_email = verify_token(token)
         if not user_email:
             raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-        # Extract summary parameters from the body
+        # Extract summary parameters from the request body
         document_name = summary_request.get("document_name")
         model_type = summary_request.get("model_type")
         gpt_model = summary_request.get("gpt_model")
+
         if not document_name or not model_type or not gpt_model:
             raise HTTPException(status_code=400, detail="Missing required parameters in request body")
 
-        # Here, implement actual summarization logic
-        logging.info(f"User {user_email} is summarizing document '{document_name}' using model '{gpt_model}'")
+        collection_name = get_collection_name(model_type)
 
-        # For demonstration purposes, a mock response is returned
-        response = f"Summary successful for document '{document_name}'."
+        # Call the document service to retrieve and summarize the document
+        response = DocumentService.query_and_evaluate_document(
+            collection_name, document_name, "", gpt_model, "Summarize"
+        )
+
         return {"summary": response}
 
     except Exception as e:

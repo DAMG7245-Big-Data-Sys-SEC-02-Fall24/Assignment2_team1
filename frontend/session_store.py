@@ -14,7 +14,7 @@ class SessionStore:
                 'display_register': False,
                 'user_email': None,
                 'current_page': 'Home',
-                'pages': ['Home', 'Summary', 'Querying']
+                'pppages': ['Home', 'Summary', 'Querying']
             }
             cls._instance.initialize_session()  # Moved here after defaults are set
         return cls._instance
@@ -28,7 +28,7 @@ class SessionStore:
             'display_register': False,
             'user_email': None,
             'current_page': 'Home',
-            'pages': ['Home', 'Summary', 'Querying']
+            'pppages': ['Home', 'Summary', 'Querying']
         }
 
     def initialize_session(self):

@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     
     # Database settings
     DATABASE_URL: str = os.getenv("DATABASE_URL")
+    MONGO_URI: str = os.getenv("MONGO_URI")
+    GCP_JSON: str = os.getenv("GCP_JSON")
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
 
     # Read RSA keys from files
     @property

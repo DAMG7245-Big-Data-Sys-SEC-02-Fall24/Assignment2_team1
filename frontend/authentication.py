@@ -52,7 +52,7 @@ class Authentication:
         st.rerun()
 
     def check_access(self):
-        """ Ensure the user is authenticated to view pages """
+        """ Ensure the user is authenticated to view pppages """
         if not self.session_store.is_authenticated():
             st.warning("You need to log in to access this page.")
             st.stop()
