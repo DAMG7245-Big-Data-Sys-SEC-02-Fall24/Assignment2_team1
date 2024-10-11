@@ -161,7 +161,7 @@ Here is the complete directory structure of the project:
 ## Architecture Diagram
 
 ![Architecture Diagram](assets/airflow_architecture_diagram.png)
-![High Level Diagram](assets/high_level_architecture_diagram.png)
+![High Level Diagram](assets/high_level_architecture_diagram_1.png)
 
 ### Description of Components:
 - **Airflow**: Orchestrates the ETL pipeline for extracting PDF text and storing it in MongoDB.
