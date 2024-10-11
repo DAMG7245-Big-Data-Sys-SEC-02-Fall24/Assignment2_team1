@@ -92,12 +92,3 @@ class MongoDBFactory:
         return self.db_helper.find_documents_by_pdf_name(pdf_name)
 
 
-# Example usage
-# if __name__ == "__main__":
-#     mongo_uri = "mongodb+srv://pemmarajuv:WLAUxpGKNraNWw3h@bigdata-f24-t1.h1tab.mongodb.net/?retryWrites=true&w=majority&appName=bigdata-f24-t1"
-#     factory = MongoDBFactory(uri=mongo_uri, database_name="pdf_database")
-#
-#     # Find documents by PDF name across collections
-#     pdf_name = "7c215d46-91c7-424e-9f22-37d43ab73ea6"
-#     documents = factory.get_document_by_pdf_name(pdf_name)
-#     print(documents)
