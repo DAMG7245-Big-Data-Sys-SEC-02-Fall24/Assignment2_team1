@@ -1,6 +1,5 @@
 import requests
 import os
-import streamlit as st
 
 # Assuming you have your API_BASE_URL in environment variables
 API_BASE_URL = os.getenv("API_BASE_URL")

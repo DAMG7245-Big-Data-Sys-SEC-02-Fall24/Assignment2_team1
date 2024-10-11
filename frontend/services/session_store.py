@@ -28,7 +28,11 @@ class SessionStore:
             'display_register': False,
             'user_email': None,
             'current_page': 'Home',
-            'pppages': ['Home', 'Summary', 'Querying']
+            'selected_file': "Select a PDF document",
+            'model_type': "Open Source Extractor",
+            'operation': "Summarize",
+            'gpt_model': "gpt-4o-mini",
+            'query_text': None
         }
 
     def initialize_session(self):

@@ -1,7 +1,7 @@
 import streamlit as st
-from session_store import session_store
-from authentication import auth
-from ObjectStore import list_files_in_gcs  # Assuming you have a function to list GCS files
+from services.session_store import session_store
+from services.authentication import auth
+from services.ObjectStore import list_files_in_gcs  # Assuming you have a function to list GCS files
 import os
 from dotenv import load_dotenv
 import requests
@@ -145,6 +145,12 @@ def login_page():
     elif session_store.get_value('display_register'):
         display_register_form()
 
+def display_pdf():
+    from streamlit_pdf_viewer import pdf_viewer
+    from services.ObjectStore import download_file_from_gcs
+    bucket_name = "assignment2-damg7245-t1"
+    filePath = download_file_from_gcs(bucket_name, st.session_state['selected_file'])
+    pdf_viewer(filePath)
 
 def display_login_form():
     st.subheader("Login")
@@ -199,8 +205,10 @@ def show_login_form():
 def display_sidebar():
     logging.info("Displaying sidebar content")
     st.sidebar.write(f"Logged in as: {session_store.get_user_email()}")
-    st.sidebar.button("Logout", on_click=auth.logout)
-
+    if st.sidebar.button("Logout"):
+        logging.info("Logging out user")
+        auth.logout()
+        st.stop()
     st.sidebar.title("File Explorer")
     bucket_name = "assignment2-damg7245-t1"  # Replace with your GCP bucket name
     prefix = "gaia_extracted_pdfs"  # Folder prefix
@@ -241,9 +249,9 @@ def display_sidebar():
                 disabled=(selected_file == "Select a PDF document")
             )
 
-            if st.sidebar.button("Clear Selection", disabled=(selected_file == "Select a PDF document")):
+            if st.sidebar.button("Clear Selection", disabled=(selected_file == "Select a PDF document"), on_click=reset_selected_file):
                 logging.info("Clearing file selection")
-                reset_selected_file()
+                # reset_selected_file()
                 st.rerun()
 
         else:
@@ -257,14 +265,14 @@ def display_sidebar():
 def on_file_change():
     logging.info("File selection changed, resetting form values")
     st.session_state['model_type'] = "Open Source Extractor"
-    st.session_state['operation'] = "Summarize"
+    st.session_state['operation'] = "View"
     st.session_state['gpt_model'] = "gpt-4o-mini"
     st.session_state['query_text'] = None
 
 def reset_selected_file():
     logging.info("Resetting selected file and form values")
     st.session_state['model_type'] = "Open Source Extractor"
-    st.session_state['operation'] = "Summarize"
+    st.session_state['operation'] = "View"
     st.session_state['query_text'] = None
     st.session_state['gpt_model'] = "gpt-4o-mini"
     st.session_state['selected_file'] = "Select a PDF document"
@@ -291,8 +299,16 @@ def display_page_content():
                         logging.error(f"Error summarizing document: {error}")
                     else:
                         logging.info(summary)
-                        st.markdown(summary, unsafe_allow_html=True)
-                        logging.info("Summary successfully displayed")
+                        # in summary replace ``` with """
+                        try:
+                            p = summary.replace("```", '"""')
+                            p = p.replace("\"\"\"markdown", "")
+                            st.markdown(p, unsafe_allow_html=True)
+                            logging.info("Summary successfully displayed")
+                        except Exception as e:
+                            logging.error(f"Error displaying summary: {e}")
+                            st.markdown(summary, unsafe_allow_html=True)
+
 
         elif st.session_state['operation'] == "Query":
             query_text = st.text_input("Enter your query:")
@@ -314,11 +330,18 @@ def display_page_content():
                             logging.error(f"Error querying document: {error}")
                         else:
                             st.write(f"Response: {response}")
-                            logging.info("Query response successfully displayed")
+                            try:
+                                p = response.replace("```", '"""')
+                                p = p.replace("\"\"\"markdown", "")
+                                st.markdown(p, unsafe_allow_html=True)
+                                logging.info("Summary successfully displayed")
+                            except Exception as e:
+                                logging.error(f"Error displaying summary: {e}")
+                                st.markdown(response, unsafe_allow_html=True)
 
-        elif st.session_state['operation'] == "View":
-            st.write("View:")
-            st.text_area("View Document:", "This is a view-only version of the document.", height=150)
+
+        elif (st.session_state['operation'] == "View"):
+            display_pdf()
 
 def process_document_name(document_name):
     return document_name.split("/")[-1].split(".")[0]
