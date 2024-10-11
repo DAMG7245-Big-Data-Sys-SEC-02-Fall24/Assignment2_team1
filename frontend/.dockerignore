@@ -10,3 +10,5 @@ infra/db_credentials.txt
 # Exclude cached and compiled files
 __pycache__/
 *.pyc
+
+
