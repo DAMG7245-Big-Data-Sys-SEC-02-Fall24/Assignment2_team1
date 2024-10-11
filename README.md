@@ -31,6 +31,50 @@ The challenge is to develop a secure platform where users can:
 
 There is a need for an automated, efficient pipeline to handle the extraction and storage process, a secure backend to manage user authentication and data access, and an intuitive frontend for users to interact with the system.
 
+
+## Deliverables Checklist
+
+### Part 1: Automating Text Extraction and Database Population
+- [ ] Create Airflow pipelines for automating data acquisition from the GAIA dataset.
+- [ ] Implement the pipeline for processing files from the GAIA Benchmarking Validation & Testing Dataset.
+- [ ] Integrate text extraction using:
+  - [ ] One open-source option (e.g., PyPDF).
+  - [ ] One enterprise/API option (e.g., AWS Textract, Adobe PDF Extract, or Azure AI Document Intelligence).
+- [ ] Ensure extracted information is populated into the data storage system (e.g., S3).
+
+### Part 2: Client-Facing Application Development
+#### FastAPI
+- [ ] Implement user registration and login functionality.
+- [ ] Secure application using JWT authentication:
+  - [ ] Protect all endpoints except for registration and login.
+  - [ ] Ensure JWT token is required for accessing protected endpoints.
+  - [ ] Indicate protected endpoints with padlock icon in Swagger UI.
+- [ ] Use a SQL database for storing user credentials with hashed passwords.
+- [ ] Move business logic to a FastAPI backend service.
+- [ ] Define services to be invoked through Streamlit.
+
+#### Streamlit
+- [ ] Develop user-friendly registration and login page.
+- [ ] Implement Question Answering interface for authenticated users.
+- [ ] Enable selection from a variety of preprocessed PDF extracts.
+- [ ] Ensure the system can query specific PDFs upon selection.
+
+### Deployment
+- [ ] Containerize FastAPI and Streamlit applications using Docker Compose.
+- [ ] Deploy applications to a public cloud platform.
+- [ ] Ensure deployed applications are publicly accessible for seamless user interaction.
+
+### Submission
+- [ ] Fully functional Airflow pipelines, Streamlit application, and FastAPI backend.
+- [ ] Ensure all services are deployed and publicly accessible with documentation.
+- [ ] Include the following in the GitHub repository:
+  - [ ] Project summary, research, PoC, and other information.
+  - [ ] GitHub project issues and tasks.
+  - [ ] Diagrams explaining the architecture and flow.
+  - [ ] Fully documented Codelabs document.
+  - [ ] 5-minute video of the project submission.
+  - [ ] Link to hosted applications, backend, and data processing services.
+
 ### Desired Outcome:
 - Secure extraction of PDF data.
 - Efficient querying and summarization of documents.
