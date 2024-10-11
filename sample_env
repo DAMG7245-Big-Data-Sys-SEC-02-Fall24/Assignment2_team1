@@ -1,0 +1,29 @@
+# Database credentials
+DB_USER=xxxx
+DB_PASSWORD=xxxx
+DB_NAME=xxxx
+DB_HOST=xxxx
+MONGO_USER=xxxx
+MONGO_PASSWORD=xxxx
+MONGO_HOST=xxxx
+MONGO_DB_NAME=xxxx
+MONGO_APP_NAME=xxxx
+
+# Database URL for the backend
+DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}
+MONGO_URI=mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DB_NAME}?retryWrites=true&w=majority&appName=${MONGO_APP_NAME}
+
+
+# JWT settings
+JWT_PRIVATE_KEY_PATH=/app/secrets/private_key.pem
+JWT_PUBLIC_KEY_PATH=/app/secrets/public_key.pem
+JWT_ALGORITHM=RS256
+
+# Token expiration times
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+
+# New variable for the frontend
+API_BASE_URL=http://backend:8000
+GCP_JSON=/app/secrets/gcp.json
+OPENAI_API_KEY=xxxx
