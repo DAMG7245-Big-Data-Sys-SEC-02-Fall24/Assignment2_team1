@@ -1,10 +1,15 @@
 
 # Assignment 2 - Document Processing and Querying Platform
 
-**Team Members:**
-- Uday Kiran Dasari - Backend ,Docker, Fronted - 33.3%
-- Sai Surya Madhav Rebbapragada - Backend, Frontend, Integratrion - 33.3%
-- Akash Varun Pennamaraju - Airflow, Infra setup - 33.3%
+## Project Links and Resources
+
+- **GitHub Issues and Tasks**: [Link to GitHub Project Issues](https://github.com/orgs/DAMG7245-Big-Data-Sys-SEC-02-Fall24/projects/2/views/1)
+- **Codelabs Documentation**: [Link to Codelabs](https://codelabs-preview.appspot.com/?file_id=1ijPlOEwtWk1SbEUBnvgiQf8MsbyyGoimfVTTof3nXEc#0)
+- **Project Submission Video (5 Minutes)**: [Link to Submission Video](https://drive.google.com/drive/folders/1wgYeUY-HsDuWcqGq1hSNVRQ3gvQBMLZC)
+- **Hosted Application Links**:
+  - **Frontend (Streamlit)**: [Link to Streamlit Application](http:/35.196.79.156:8501:8501)
+  - **Backend (FastAPI)**: [Link to FastAPI Application](http:/35.196.79.156:8501:8000/docs)
+  - **Data Processing Service (Airflow)**: [Link to Data Processing Service](http:/35.196.79.156:8501:8080)
 
 ## Introduction
 
@@ -226,6 +231,14 @@ Here is the complete directory structure of the project:
 - **API Rate Limits**: Handled by caching results and optimizing request frequency.
 - **Large File Handling**: Implemented efficient streaming methods for large PDFs.
 - **Authentication**: Secured the API endpoints using JWT tokens to prevent unauthorized access.
+
+
+
+**Team Members:**
+- Uday Kiran Dasari - Backend ,Docker, Fronted - 33.3%
+- Sai Surya Madhav Rebbapragada - Backend, Frontend, Integratrion - 33.3%
+- Akash Varun Pennamaraju - Airflow, Infra setup - 33.3%
+
 
 ## References
 
