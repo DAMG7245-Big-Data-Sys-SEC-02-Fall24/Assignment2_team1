@@ -103,3 +103,115 @@ To start all services:
 ```bash
 docker compose up
 ```
+
+# Explaination of Project 
+
+
+# PDF Extraction Pipeline with Airflow (Docker Compose)
+
+This project implements a pipeline using Apache Airflow, Docker Compose, and Google Cloud Storage (GCS) to automate the process of downloading a dataset from Hugging Face, extracting PDF files, uploading them to GCS, and processing them to extract tables, text, and images. The extracted data is stored in MongoDB.
+
+## Table of Contents
+- [Project Structure](#project-structure)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Setup](#setup)
+  - [1. Environment Variables](#1-environment-variables)
+  - [2. Docker Setup](#2-docker-setup)
+  - [3. Setup GCP and MongoDB](#3-setup-gcp-and-mongodb)
+- [DAG Overview](#dag-overview)
+- [Tasks](#tasks)
+- [Usage](#usage)
+- [License](#license)
+
+## Project Structure
+
+```bash
+.
+├── dags/
+│   ├── task1.py          # Clone Hugging Face repository
+│   ├── task2.py          # Extract PDFs from dataset
+│   ├── task3.py          # Upload PDFs to GCS
+│   ├── task4.py          # Process PDFs using open-source tools
+│   └── task5.py          # Process PDFs using closed-source tools
+├── config/
+│   └── gcp.json          # Google Cloud credentials for GCS
+├── docker-compose.yaml   # Docker Compose setup for Airflow
+└── .env                  # Environment variables
+```
+
+## Features
+- Clone dataset repository from Hugging Face.
+- Extract PDFs from the dataset, including handling zip files.
+- Upload extracted PDFs to a GCP bucket.
+- Extract text, images, and tables from PDFs.
+- Store extracted data in MongoDB.
+- Two data extraction pipelines: open-source and closed-source API (PDF.co).
+
+## Requirements
+- Docker
+- Docker Compose
+- Google Cloud Storage (GCS) and a service account
+- Hugging Face account with an API token
+- `pdf.co` account with an API key for the closed-source tool
+
+## Setup
+
+### Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```bash
+AIRFLOW_UID=50000
+
+# Hugging Face token
+HF_TOKEN=your_huggingface_token
+
+# MongoDB connection URI
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/db_name
+
+# GCP credentials
+GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/config/gcp.json
+
+# PDF.co API Key
+PDFCO_API_KEY=your_pdfco_api_key
+```
+
+### Setup GCP and MongoDB
+
+- [Create a GCP bucket](https://cloud.google.com/storage/docs/creating-buckets).
+- Ensure you have a MongoDB cluster running, either locally or on MongoDB Atlas.
+- Upload your GCP service account key to `config/gcp.json`.
+
+## DAG Overview
+
+The DAG `Pdf_Extraction_Pipeline_test` consists of five tasks:
+
+1. **Clone Hugging Face Repository**  
+   Downloads the dataset from Hugging Face.
+
+2. **Extract PDFs**  
+   Extracts PDFs from the dataset, including handling zip files.
+
+3. **Upload PDFs to GCS**  
+   Uploads the extracted PDFs to Google Cloud Storage.
+
+4. **Process PDFs with Open-Source Tools**  
+   Extracts text, images, and tables from PDFs using `pymupdf` and uploads them to GCS.
+
+5. **Process PDFs with Closed-Source Tools**  
+   Extracts text, tables from PDFs using the PDF.co API.
+
+## Tasks
+
+- **`task1.py`**: Logs in to Hugging Face, clones the dataset repository.
+- **`task2.py`**: Extracts PDF files from the dataset, handling zip files.
+- **`task3.py`**: Uploads extracted PDFs to a GCS bucket.
+- **`task4.py`**: Processes PDFs using open-source tools to extract text, images, and tables, and saves them to GCS and MongoDB.
+- **`task5.py`**: Processes PDFs using PDF.co to extract tables and text.
+
+## Usage
+
+Once Airflow is running in Docker, you can trigger the `Pdf_Extraction_Pipeline_test` DAG manually from the Airflow UI or schedule it to run daily. 
+
+Monitor the task progress in the UI and check GCS and MongoDB for the uploaded data.
