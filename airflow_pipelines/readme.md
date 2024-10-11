@@ -101,7 +101,7 @@ This Docker Compose setup is a "quick-start" environment and not suited for prod
 To start all services:
 
 ```bash
-docker compose up
+docker compose up -d
 ```
 
 # Explaination of Project 
@@ -183,9 +183,11 @@ PDFCO_API_KEY=your_pdfco_api_key
 - Ensure you have a MongoDB cluster running, either locally or on MongoDB Atlas.
 - Upload your GCP service account key to `config/gcp.json`.
 
-## DAG Overview
+## Airflow Pipeline Overview
 
-The DAG `Pdf_Extraction_Pipeline_test` consists of five tasks:
+![](/assets/airflow_architecture_diagram.png)
+
+The DAG `Pdf_Extraction_Pipeline` consists of five tasks:
 
 1. **Clone Hugging Face Repository**  
    Downloads the dataset from Hugging Face.
