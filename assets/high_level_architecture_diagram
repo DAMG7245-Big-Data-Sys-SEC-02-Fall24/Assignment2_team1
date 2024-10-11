@@ -1,0 +1,48 @@
+digraph "PDF Extraction Pipeline - High-Level Architecture" {
+	graph [fontcolor="#2D3436" fontname="Sans-Serif" fontsize=14 label="PDF Extraction Pipeline - High-Level Architecture" nodesep=0.8 pad=2.0 rankdir=LR ranksep=1.0 splines=polyline]
+	node [fixedsize=true fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 height=1.4 imagescale=true labelloc=b shape=box style=rounded width=1.4]
+	edge [color="#7B8894"]
+	bbb00704241942e1b672a284bbcd3e52 [label="User/Developer" height=1.9 image="/opt/homebrew/Caskroom/miniforge/base/envs/bigdata/lib/python3.10/site-packages/resources/onprem/client/users.png" shape=none]
+	c4f192b9f7c64136a8be5b681ec3eaad [label="Hugging Face Dataset" height=1.9 image="../assets/icons/hf-logo.png" shape=none]
+	"0e9addf55a49418eb33fda591479cc31" -> fb6e5a76a9674e5ca582e16ede10e7db [dir=none fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0 style=dotted]
+	"0e9addf55a49418eb33fda591479cc31" -> "80eb560b70ed4d3a9834e3431a7ccdf8" [dir=none fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0 style=dotted]
+	"246d0cca26304027b0540abc9f239ad4" -> "604140ecddc5471f9b015d46d1884616" [dir=none fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0 style=dotted]
+	"246d0cca26304027b0540abc9f239ad4" -> "0e9addf55a49418eb33fda591479cc31" [dir=none fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0 style=dotted]
+	"5c36a1bd5806435893cd148ba52636f1" -> "24819abc0f544d3397cedc14b6b59bf0" [dir=none fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 style=invisible]
+	"24819abc0f544d3397cedc14b6b59bf0" -> a88e32f06fbd4f578558f8326ce031a0 [dir=none fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 style=invisible]
+	a88e32f06fbd4f578558f8326ce031a0 -> "073f211788894b50b3b457ecf86a0feb" [dir=none fontcolor="#2D3436" fontname="Sans-Serif" fontsize=13 style=invisible]
+	subgraph "cluster_Google Cloud Platform" {
+		graph [bgcolor="#E5F5FD" fontname="Sans-Serif" fontsize=12 label="Google Cloud Platform" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+		"5c36a1bd5806435893cd148ba52636f1" [label="" height=1.9 image="../assets/icons/gcp-logo.png" shape=none]
+		"24819abc0f544d3397cedc14b6b59bf0" [label="Cloud Storage
+Bucket" height=2.3 image="/opt/homebrew/Caskroom/miniforge/base/envs/bigdata/lib/python3.10/site-packages/resources/gcp/storage/storage.png" shape=none]
+		a88e32f06fbd4f578558f8326ce031a0 [label="Cloud SQL
+(User Credentials)" height=2.3 image="/opt/homebrew/Caskroom/miniforge/base/envs/bigdata/lib/python3.10/site-packages/resources/gcp/database/sql.png" shape=none]
+		subgraph "cluster_VM Instance" {
+			graph [bgcolor="#EBF3E7" fontname="Sans-Serif" fontsize=12 label="VM Instance" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+			"073f211788894b50b3b457ecf86a0feb" [label="VM Instance" height=1.9 image="/opt/homebrew/Caskroom/miniforge/base/envs/bigdata/lib/python3.10/site-packages/resources/gcp/compute/compute-engine.png" shape=none]
+			subgraph "cluster_Docker Environment" {
+				graph [bgcolor="#ECE8F6" fontname="Sans-Serif" fontsize=12 label="Docker Environment" labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+				"246d0cca26304027b0540abc9f239ad4" [label="Docker Compose" height=1.9 image="/opt/homebrew/Caskroom/miniforge/base/envs/bigdata/lib/python3.10/site-packages/resources/onprem/container/docker.png" shape=none]
+				"604140ecddc5471f9b015d46d1884616" [label=Airflow height=1.9 image="/opt/homebrew/Caskroom/miniforge/base/envs/bigdata/lib/python3.10/site-packages/resources/onprem/workflow/airflow.png" shape=none]
+				subgraph cluster_FastAPI {
+					graph [bgcolor="#FDF7E3" fontname="Sans-Serif" fontsize=12 label=FastAPI labeljust=l pencolor="#AEB6BE" rankdir=LR shape=box style=rounded]
+					"0e9addf55a49418eb33fda591479cc31" [label=FastAPI height=1.9 image="/opt/homebrew/Caskroom/miniforge/base/envs/bigdata/lib/python3.10/site-packages/resources/programming/framework/fastapi.png" shape=none]
+					fb6e5a76a9674e5ca582e16ede10e7db [label="Summary Endpoint" height=1.9 image="../assets/icons/summary.jpg" shape=none]
+					"80eb560b70ed4d3a9834e3431a7ccdf8" [label="Query Endpoint" height=1.9 image="../assets/icons/query.png" shape=none]
+				}
+			}
+		}
+	}
+	e73f2382d4134ed2840fd2e5acd96684 [label="PDF.co API" height=1.9 image="../assets/icons/pdfco.png" shape=none]
+	df9cbfe2e0474b539b26b9c44dba5297 [label="OpenAI API" height=1.9 image="../assets/icons/openai.png" shape=none]
+	bbb00704241942e1b672a284bbcd3e52 -> "0e9addf55a49418eb33fda591479cc31" [label="Register/Login" dir=forward fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	bbb00704241942e1b672a284bbcd3e52 -> "0e9addf55a49418eb33fda591479cc31" [label="Access APIs (with JWT)" dir=forward fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	"0e9addf55a49418eb33fda591479cc31" -> a88e32f06fbd4f578558f8326ce031a0 [label=Authenticate dir=forward fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	"0e9addf55a49418eb33fda591479cc31" -> "24819abc0f544d3397cedc14b6b59bf0" [label="Store/Retrieve Data" dir=forward fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	fb6e5a76a9674e5ca582e16ede10e7db -> df9cbfe2e0474b539b26b9c44dba5297 [label="Get Summary" dir=forward fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	"80eb560b70ed4d3a9834e3431a7ccdf8" -> df9cbfe2e0474b539b26b9c44dba5297 [label="Get Answer" dir=forward fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	"604140ecddc5471f9b015d46d1884616" -> c4f192b9f7c64136a8be5b681ec3eaad [label=Clone dir=back fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	"604140ecddc5471f9b015d46d1884616" -> "24819abc0f544d3397cedc14b6b59bf0" [label="Store/Retrieve" dir=forward fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+	"604140ecddc5471f9b015d46d1884616" -> e73f2382d4134ed2840fd2e5acd96684 [label="Process PDFs" dir=both fontcolor=black fontname="Sans-Serif" fontsize=11 penwidth=2.0]
+}

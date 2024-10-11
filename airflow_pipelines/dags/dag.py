@@ -23,7 +23,6 @@ dag = DAG(
     'Pdf_Extraction_Pipeline_test',
     default_args=default_args,
     description='A DAG to clone Hugging Face repo, extract PDFs, and process data',
-    schedule_interval=timedelta(days=1),
 )
 
 # Define the first task (clone Hugging Face repo)
