@@ -7,9 +7,9 @@
 - **Codelabs Documentation**: [Link to Codelabs](https://codelabs-preview.appspot.com/?file_id=1ijPlOEwtWk1SbEUBnvgiQf8MsbyyGoimfVTTof3nXEc#0)
 - **Project Submission Video (5 Minutes)**: [Link to Submission Video](https://drive.google.com/drive/folders/1wgYeUY-HsDuWcqGq1hSNVRQ3gvQBMLZC)
 - **Hosted Application Links**:
-  - **Frontend (Streamlit)**: [Link to Streamlit Application](http:/35.196.79.156:8501:8501)
-  - **Backend (FastAPI)**: [Link to FastAPI Application](http:/35.196.79.156:8501:8000/docs)
-  - **Data Processing Service (Airflow)**: [Link to Data Processing Service](http:/35.196.79.156:8501:8080)
+  - **Frontend (Streamlit)**: [Link to Streamlit Application](http:/35.196.79.156:8501)
+  - **Backend (FastAPI)**: [Link to FastAPI Application](http:/35.196.79.156:8000/docs)
+  - **Data Processing Service (Airflow)**: [Link to Data Processing Service](http:/35.196.79.156:8080)
 
 ## Introduction
 
