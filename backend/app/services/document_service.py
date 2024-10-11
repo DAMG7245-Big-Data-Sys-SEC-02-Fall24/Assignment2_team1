@@ -1,8 +1,10 @@
+from app.services.gpt import EvaluationModel, evaluate
 from app.services.mongo import MongoDBFactory
-import logging
 from fastapi import HTTPException
 from app.config.settings import settings
-# MongoDB URI and database name (ideally this should be loaded from environment variables)
+import logging
+
+# MongoDB URI and database name
 database_name = "pdf_database"
 
 # Initialize the MongoDB factory
@@ -12,46 +14,86 @@ mongo_factory = MongoDBFactory(uri=settings.MONGO_URI, database_name=database_na
 class DocumentService:
 
     @staticmethod
-    def query_document(collection_name: str, pdf_name: str, query_text: str):
+    def query_and_evaluate_document(collection_name: str, pdf_name: str, query_text: str, gpt_model: str,
+                                    objective: str):
         """
-        Query a document from a specific collection by PDF name and query text.
+        Query a document and evaluate it with the specified GPT model and objective.
         """
         try:
-            # Query the document from the specified collection using the MongoDB factory
+            # Query the document from MongoDB
             document = mongo_factory.db_helper.find_document_by_pdf_name(collection_name, pdf_name)
-
             if not document:
                 raise HTTPException(status_code=404,
                                     detail=f"No document found for pdf_name '{pdf_name}' in collection '{collection_name}'")
 
-            # Here you would implement the logic for querying the document's content (e.g., full-text search)
-            # For now, we're returning the full document as an example
-            logging.info(f"Document found for pdf_name: {pdf_name} in collection: {collection_name}")
-            return document
+            # Extract text, tables, and images from the document pages
+            document_text, file_attachments = DocumentService.extract_content_from_pages(document)
+            logging.info(f"Extracted document content from {len(document.get('pages', []))} pages.")
+            logging.info(f"Document text length: {len(document_text)} characters.")
+            # Build the evaluation model for OpenAI
+            evaluation_model = EvaluationModel(
+                objective=objective,
+                file_attachments=file_attachments,  # Attach images and tables
+                model=gpt_model,
+                query=query_text,
+                additional_context=document_text  # Add the document text as context
+            )
+
+            # Call the evaluate function
+            evaluated_response = evaluate(evaluation_model)
+            return evaluated_response.response  # Return the response from the evaluation
 
         except Exception as e:
-            logging.error(f"An error occurred while querying the document: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"An error occurred while querying the document: {str(e)}")
+            logging.error(f"An error occurred while querying and evaluating the document: {str(e)}")
+            raise HTTPException(status_code=500,
+                                detail=f"An error occurred while querying and evaluating the document: {str(e)}")
 
     @staticmethod
-    def summarize_document(collection_name: str, pdf_name: str):
+    def extract_content_from_pages(document):
         """
-        Summarize a document from a specific collection by PDF name.
+        Extract text, tables, and images from the document's pages.
+        Returns:
+            - document_text (str): Combined text from all pages.
+            - file_attachments (list): List of unique table and image URLs.
         """
+        document_text = []
+        file_attachments = set()  # Use a set to avoid duplicate entries
+
         try:
-            # Query the document from the specified collection using the MongoDB factory
-            document = mongo_factory.db_helper.find_document_by_pdf_name(collection_name, pdf_name)
+            pages = document.get('pages', [])
 
-            if not document:
-                raise HTTPException(status_code=404,
-                                    detail=f"No document found for pdf_name '{pdf_name}' in collection '{collection_name}'")
+            # Iterate through the pages
+            for page in pages:
+                # Extract text
+                page_text = page.get('text', '')
+                document_text.append(page_text)
 
-            # Implement your summarization logic here. For now, we return a mock summary.
-            summary = f"Mock summary for the document '{pdf_name}' in collection '{collection_name}'."
-            logging.info(f"Summary created for pdf_name: {pdf_name} in collection: {collection_name}")
-            return summary
+                # Extract tables and add them to file_attachments
+                tables = page.get('tables', [])
+                file_attachments.update(tables)
+
+                # Extract images and add them to file_attachments
+                images = page.get('images', [])
+                file_attachments.update(images)
+
+            # Combine all page texts into a single string
+            combined_text = "\n".join(document_text)
+
+            # Return combined text and list of unique file attachments
+            return combined_text, list(file_attachments)
 
         except Exception as e:
-            logging.error(f"An error occurred while summarizing the document: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"An error occurred while summarizing the document: {str(e)}")
+            logging.error(f"Error extracting document content: {str(e)}")
+            raise HTTPException(status_code=500, detail="Error extracting document content.")
 
+
+if __name__ == "__main__":
+    # Example usage of the query_and_evaluate_document function
+    collection_name = "pdf_collection_pymupdf"
+    pdf_name = "021a5339-744f-42b7-bd9b-9368b3efda7a"
+    query_text = "What is the main idea of the document?"
+    gpt_model = "gpt-4o-mini"
+    objective = "Query"
+
+    response = DocumentService.query_and_evaluate_document(collection_name, pdf_name, query_text, gpt_model, objective)
+    print(response)

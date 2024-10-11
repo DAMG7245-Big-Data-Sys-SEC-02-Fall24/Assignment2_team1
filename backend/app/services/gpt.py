@@ -10,7 +10,7 @@ from google.oauth2 import service_account
 from openai import OpenAI
 
 from app.config.settings import settings
-from tools import tools
+from app.services.tools import tools
 from fastapi import HTTPException
 
 # Setup logging configuration
@@ -21,12 +21,13 @@ logger = logging.getLogger(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class EvaluationModel:
-    def __init__(self, objective: str, file_attachments: list, model: str, query: str = None):
+    def __init__(self, objective: str, file_attachments: list, model: str, query: str = None, additional_context: str = None):
         self.objective = objective
         self.file_attachments = file_attachments
         self.model = model
         self.response = None
         self.query = query
+        self.additional_context = additional_context
 
 
 from google.cloud import storage
@@ -169,7 +170,7 @@ def evaluate(evaluation: EvaluationModel):
         tools_used.append(tool)
 
     if evaluation.objective == "Summarize":
-        objective_prompt = "Summarize the following information concisely."
+        objective_prompt = "Summarize the following information concisely. Give me only markdown code as response. Keep it well formatted and structured. Response must not have any tabular form. Keep it concise. Explain what the data is about and infer it."
     elif evaluation.objective == "Query":
         objective_prompt = "Answer the following query based on the given context." + f"\n-------Query--------: {evaluation.query}"
     else:
@@ -180,6 +181,7 @@ def evaluate(evaluation: EvaluationModel):
     prompt = f"""
     {objective_prompt}
     Context: {full_context}
+    Additional Context (This is the full text that is extracted from the source: {evaluation.additional_context}
     """
 
     message = {"role": "user", "content": [{"type": "text", "text": prompt}]}
