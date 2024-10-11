@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.openapi.utils import get_openapi
 from sqlalchemy.orm import Session
-from app.routes import auth_routes,summary_routes,query_routes
+from app.routes import auth_routes,summary_routes
 from app.services.auth_service import verify_token
 from app.services.database_service import get_db
 
@@ -28,8 +28,7 @@ app.include_router(auth_routes.router, prefix="/auth", tags=["Authentication"])
 # Include the authentication routes from the summary module
 app.include_router(summary_routes.router,tags=["Summary"])
 
-# Include the authentication routes from the query module
-app.include_router(query_routes.router,tags=["Query"])
+
 
 # Root endpoint
 @app.get("/")

@@ -158,6 +158,29 @@ def handle_file_reading(file_path: str):
         logger.error(f"File could not be found: {file_path}")
         raise HTTPException(status_code=404, detail=f"File '{file_path}' could not be found.")
 
+
+def generate_summarization_prompt():
+    prompt = """
+    ```markdown
+    Summarize the following information concisely. 
+    - **Output Format**: Provide the response in well-structured markdown, using clear and concise language.
+    - **Instructions**: Explain what the data is about and infer key insights based on it.
+    - **Important**: If the data provided does not contain enough information to explain the topic fully, clearly state that the information is insufficient and provide no additional speculation.
+    ```
+    """
+    return prompt
+
+# Function to generate the query answering prompt
+def generate_query_prompt(evaluation_query):
+    prompt = f"""
+    ```markdown
+    Answer the following query based on the given context. 
+    - **Query**: {evaluation_query}
+    - **Output Format**: Structure the answer in markdown format, ensuring it is clear and well-organized.
+    - **Important**: If the provided context does not contain the required information to fully answer the query, clearly state that the data is insufficient and avoid making assumptions or speculating.
+    ```
+    """
+    return prompt
 def evaluate(evaluation: EvaluationModel):
     logger.info(f"Starting evaluation with objective: {evaluation.objective}")
     context_list = []
@@ -170,9 +193,9 @@ def evaluate(evaluation: EvaluationModel):
         tools_used.append(tool)
 
     if evaluation.objective == "Summarize":
-        objective_prompt = "Summarize the following information concisely. Give me only markdown code as response. Keep it well formatted and structured. Response must not have any tabular form. Keep it concise. Explain what the data is about and infer it."
+        objective_prompt = generate_summarization_prompt()
     elif evaluation.objective == "Query":
-        objective_prompt = "Answer the following query based on the given context." + f"\n-------Query--------: {evaluation.query}"
+        objective_prompt = generate_query_prompt(evaluation.query)
     else:
         logger.error("Invalid objective provided.")
         raise HTTPException(status_code=400, detail="Invalid objective. Must be either 'Summarize' or 'Query'.")

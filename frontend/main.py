@@ -329,7 +329,6 @@ def display_page_content():
                             st.error(f"Error: {error}")
                             logging.error(f"Error querying document: {error}")
                         else:
-                            st.write(f"Response: {response}")
                             try:
                                 p = response.replace("```", '"""')
                                 p = p.replace("\"\"\"markdown", "")
