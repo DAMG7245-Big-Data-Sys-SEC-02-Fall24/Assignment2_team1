@@ -102,6 +102,87 @@ The extracted data is stored in GCP and MongoDB for easy querying and further pr
 
 Challenges such as managing API limits and optimizing extraction pipelines have been addressed by caching results and using efficient database queries.
 
+Certainly! Here’s the section for **local setup and running the code locally** that you can insert into your existing README:
+
+---
+
+## Local Setup and Running the Project Locally
+
+### Prerequisites
+
+Ensure that the following dependencies are installed on your system:
+
+- **Python 3.12** or later
+- **Poetry** for dependency management
+- **Docker** and **Docker Compose**
+- **Git** for cloning the repository
+
+### Clone the Repository
+
+Clone the repository to your local machine:
+
+```bash
+git clone https://github.com/DAMG7245-Big-Data-Sys-SEC-02-Fall24/Assignment2_team1.git
+cd Assignment2_team1
+```
+
+### Backend Setup
+
+1. Navigate to the `backend` directory:
+
+   ```bash
+   cd backend
+   ```
+
+2. Install the dependencies using Poetry:
+
+   ```bash
+   poetry install
+   ```
+
+3. Set up environment variables by creating a `.env` file in the `backend` directory (refer to the **Environment Variables** section for more details).
+
+4. Run the backend server:
+
+   ```bash
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+   The backend will be accessible at `http://localhost:8000`.
+
+### Frontend Setup
+
+1. Navigate to the `frontend` directory:
+
+   ```bash
+   cd ../frontend
+   ```
+
+2. Install the dependencies using Poetry:
+
+   ```bash
+   poetry install
+   ```
+
+3. Set up environment variables by creating a `.env` file in the `frontend` directory (refer to the **Environment Variables** section for more details).
+
+4. Run the frontend server:
+
+   ```bash
+   streamlit run main.py --server.port=8501 --server.address=0.0.0.0
+   ```
+
+   The frontend will be accessible at `http://localhost:8501`.
+
+### Running Both Services
+
+To run the entire project locally:
+
+1. Open two terminal windows or tabs.
+2. In the first terminal, navigate to the `backend` directory and start the backend service.
+3. In the second terminal, navigate to the `frontend` directory and start the frontend service.
+
+
 ## Project Directory Structure
 
 Here is the complete directory structure of the project:
