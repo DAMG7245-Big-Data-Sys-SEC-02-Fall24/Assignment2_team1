@@ -23,7 +23,7 @@ def get_collection_name(model_type: str):
     if model_type == "Open Source Extractor":
         return f"pdf_collection_pymupdf"
     elif model_type == "Closed Source Extractor":
-        return f"pdf_collection_pymupdf"
+        return f"pdf_collection_pdfco_fi"
     else:
         raise HTTPException(status_code=400, detail="Invalid model type")
 
