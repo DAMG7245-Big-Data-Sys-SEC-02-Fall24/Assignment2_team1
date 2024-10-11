@@ -48,7 +48,6 @@ def clear_session_storage():
 def main():
     # Set Streamlit page configuration
     logging.info("Setting Streamlit page configuration")
-    set_page_config()
     initialize_session_state()
 
     # Authentication handling
@@ -57,6 +56,7 @@ def main():
         login_page()
     else:
         logging.info("User authenticated, displaying sidebar and main content")
+        set_page_config()
         display_sidebar()  # Display the file picker in the sidebar
         display_page_content()  # Main content
 
@@ -73,13 +73,78 @@ def set_page_config():
         logging.error(f"Error setting page config: {e}")
 
 def login_page():
-    st.title("Welcome to the Application")
-    logging.info("Rendering login page")
+    st.set_page_config(layout="centered")
+
+    st.markdown(
+        """
+        <style>
+        .container {
+            text-align: center;            
+            font-family: Arial, sans-serif;
+        }
+        .title {
+            font-size: 2.5em;
+            color: #2E86C1;
+            margin-bottom: 10px;
+        }
+        .welcome {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .features {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .features h3 {
+            color: #1A5276;
+        }
+        .features ul {
+            text-align: center;
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .features ul li {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 10px;
+            padding-left: 1.5em;
+            text-indent: -1.5em;
+        }
+        .features ul li:before {
+            content: '✓';
+            margin-right: 10px;
+            color: #1ABC9C;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #777;
+        }
+        </style>
+        <div class="container">
+            <div class="title">Document Query Platform</div>            
+            <div class="features">
+                <h3>Features available:</h3>
+                <ul>
+                    <li>Secure Document Summarization and Querying</li>
+                    <li>Access to Multiple Document Extractors (Open Source & Enterprise)</li>
+                    <li>Seamless Integration with GPT Models for Text Extraction</li>
+                    <li>View and Interact with Pre-Processed Documents</li>
+                </ul>
+            </div>            
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     if session_store.get_value('display_login'):
         display_login_form()
     elif session_store.get_value('display_register'):
         display_register_form()
+
 
 def display_login_form():
     st.subheader("Login")
@@ -225,7 +290,8 @@ def display_page_content():
                         st.error(f"Error: {error}")
                         logging.error(f"Error summarizing document: {error}")
                     else:
-                        st.markdown(summary)
+                        logging.info(summary)
+                        st.markdown(summary, unsafe_allow_html=True)
                         logging.info("Summary successfully displayed")
 
         elif st.session_state['operation'] == "Query":
